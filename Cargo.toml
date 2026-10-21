@@ -1,0 +1,33 @@
+[package]
+name = "ddns-monitor"
+version = "0.1.0"
+edition = "2024"
+description = "Provider-agnostic DDNS monitor with plugin architecture"
+license = "Unlicense"
+
+[[bin]]
+name = "ddns-monitor"
+path = "src/main.rs"
+
+[dependencies]
+# Serialization — state JSON and config TOML
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml       = "0.8"
+
+# HTTP client — blocking (no async needed for a oneshot binary)
+reqwest    = { version = "0.12", features = ["blocking"], default-features = false }
+
+# TLS backend — uses the system's OpenSSL
+reqwest-middleware = { version = "0.4", optional = true }  # future: retry middleware
+
+# Error handling
+thiserror  = "2"
+
+# Logging
+log        = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+# Lightweight HTTP mock server for testing IpResolver without real network
+mockito = "1"
