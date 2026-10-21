@@ -26,16 +26,9 @@
         extensions = [ "rust-src" "rust-analyzer" "clippy" "rustfmt" ];
       };
 
-      # Shared native build inputs used by both the devShell and the package
-      nativeBuildInputs = with pkgs; [
-        rustToolchain
-        pkg-config
-      ];
-
-      # Runtime / link-time dependencies
-      buildInputs = with pkgs; [
-        openssl   # reqwest TLS backend
-      ];
+      # ureq bundles rustls — no system OpenSSL or pkg-config needed
+      nativeBuildInputs = with pkgs; [ rustToolchain ];
+      buildInputs = [ ];
 
     in
     {
@@ -57,10 +50,6 @@
           curl
           jq
         ];
-
-        # Point OpenSSL build scripts at the Nix store paths
-        OPENSSL_NO_VENDOR = "1";
-        PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
 
         shellHook = ''
           echo ""

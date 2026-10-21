@@ -34,7 +34,7 @@ See [`ROADMAP.md`](./ROADMAP.md) for the full plan.
 
 ## Quick Start (development)
 
-Prerequisites: Nix with flakes enabled.
+Prerequisites: Nix with flakes enabled. No system OpenSSL required — TLS is handled by bundled rustls.
 
 ```bash
 # Enter the development shell (downloads pinned Rust toolchain)
