@@ -18,6 +18,7 @@ path = "src/main.rs"
 serde      = { version = "1", features = ["derive"] }
 serde_json = "1"
 toml       = "0.8"
+jiff       = "0.2"
 
 # HTTP client — synchronous, no tokio runtime, TLS via bundled rustls
 ureq       = { version = "3", features = ["rustls"] }
