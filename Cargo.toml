@@ -5,6 +5,10 @@ edition = "2024"
 description = "Provider-agnostic DDNS monitor with plugin architecture"
 license = "Unlicense"
 
+[lib]
+name = "ddns_monitor"
+path = "src/lib.rs"
+
 [[bin]]
 name = "ddns-monitor"
 path = "src/main.rs"
