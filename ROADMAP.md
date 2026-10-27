@@ -212,111 +212,107 @@ Replace `dynu.nix` with a new module that:
 
 ## Implementation Phases
 
-### Phase 0 — Cleanup & Rename *(Now)*
-- [ ] Fix syntax error in `models.rs`
-- [ ] Rename crate from `dynu-monitor` to `ddns-monitor` in `Cargo.toml`
-- [ ] Add `Cargo.toml` dependencies: `serde`, `serde_json`, `toml`, `reqwest` (blocking), `thiserror`
-- [ ] Stub out module tree: `domain/`, `infra/`, `config.rs`, `plugins/`
+### Phase 0 — Cleanup & Rename *(Completed)*
+- [x] Fix syntax error in `models.rs`
+- [x] Rename crate from `dynu-monitor` to `ddns-monitor` in `Cargo.toml`
+- [x] Add `Cargo.toml` dependencies: `serde`, `serde_json`, `toml`, `ureq` (rustls), `thiserror`
+- [x] Stub out module tree: `domain/`, `infra/`, `config.rs`, `plugins/`
 
 ---
 
-### Phase 1 — Domain Layer
+### Phase 1 — Domain Layer *(Completed)*
 *No external dependencies. Pure Rust types and logic.*
 
-- [ ] `MonitorState` with correct types (`Option<Ipv4Addr>`, `Option<usize>`)
-- [ ] `IpDiscoveryResult`
-- [ ] `HistoryEntry` + `SubscriberResult`
-- [ ] IPv4 public-address validation (port Python's RFC-aware logic)
-- [ ] Provider rotation logic (next index from state)
-- [ ] `DdnsUpdater` trait
-- [ ] `UpdateError` enum with `thiserror`
-- [ ] Unit tests: rotation, validation, state transitions
+- [x] `MonitorState` with correct types (`Option<Ipv4Addr>`, `Option<usize>`)
+- [x] `IpDiscoveryResult`
+- [x] `HistoryEntry` + `SubscriberResult`
+- [x] IPv4 public-address validation (RFC-compliant)
+- [x] Provider rotation logic (next index from state)
+- [x] `DdnsUpdater` trait
+- [x] `UpdateError` enum with `thiserror`
+- [x] Unit tests: rotation, validation, state transitions
 
 **Learning targets:** structs, enums, `Option<T>`, traits, `Result<T, E>`, unit tests
 
 ---
 
-### Phase 2 — Configuration
+### Phase 2 — Configuration *(Completed)*
 *Parse config file and build subscriber list.*
 
-- [ ] `Config` struct with `serde` + `toml`
-- [ ] `SubscriberConfig` with per-provider credential resolution (env var → file → error)
-- [ ] NixOS module integration stubs (paths, env vars, state dir)
-- [ ] Unit tests: config parsing, credential resolution errors
+- [x] `Config` struct with `serde` + `toml`
+- [x] `SubscriberConfig` with per-provider credential resolution (env var → file → error)
+- [x] NixOS module integration stubs (paths, env vars, state dir)
+- [x] Unit tests: config parsing, credential resolution errors
 
 **Learning targets:** `serde`, generics, `Result` propagation with `?`
 
 ---
 
-### Phase 3 — Application Service
+### Phase 3 — Application Service *(Completed)*
 *Wire domain + config into orchestration logic.*
 
-- [ ] `IpMonitorService` struct taking trait objects
-- [ ] Full workflow (load → discover → compare → fan-out → persist → log)
-- [ ] In-memory fake implementations for all trait dependencies
-- [ ] Integration-style unit tests: no HTTP, no fs, no systemd
+- [x] `IpMonitorService` struct taking trait objects
+- [x] Full workflow (load → discover → compare → fan-out → persist → log)
+- [x] In-memory fake implementations for all trait dependencies
+- [x] Integration-style unit tests: no HTTP, no fs, no systemd
 
 **Learning targets:** dependency injection via traits, `Box<dyn Trait>`, borrowing, lifetime basics
 
 ---
 
-### Phase 4 — IP Resolution (HTTP)
+### Phase 4 — IP Resolution (HTTP) *(Completed)*
 *Real network calls.*
 
-- [ ] `HttpIpResolver` using blocking `reqwest`
-- [ ] Timeout configuration
-- [ ] Provider fallback loop
-- [ ] Address validation on response
-- [ ] Unit tests: mock server or `mockito`
+- [x] `HttpIpResolver` using synchronous `ureq` (bundled rustls)
+- [x] Timeout configuration
+- [x] Provider fallback loop
+- [x] Address validation on response
+- [x] Unit tests: mock server with `mockito`
 
 **Learning targets:** HTTP clients, blocking async in Rust, error propagation
 
 ---
 
-### Phase 5 — State & History (Filesystem)
+### Phase 5 — State & History (Filesystem) *(Completed)*
 *Persistent JSON state and JSONL audit log.*
 
-- [ ] `JsonStateRepository`: atomic write (write-to-tmp → rename)
-- [ ] `JsonlHistoryRepository`: append-only writes
-- [ ] State directory creation (respects `StateDirectory=` systemd or XDG on non-NixOS)
-- [ ] Unit tests: serialization round-trips, atomic write behavior
+- [x] `JsonStateRepository`: atomic write (write-to-tmp → rename)
+- [x] `JsonlHistoryRepository`: append-only writes
+- [x] State directory creation (respects `StateDirectory=` systemd or XDG on non-NixOS)
+- [x] Unit tests: serialization round-trips, atomic write behavior
 
 **Learning targets:** file I/O, `serde_json`, atomic FS patterns
 
 ---
 
-### Phase 6 — Dynu Plugin
+### Phase 6 — Dynu Plugin *(Completed)*
 *First real DDNS provider.*
 
-- [ ] `DynuUpdater` implementing `DdnsUpdater`
-- [ ] Calls Dynu HTTP API v2 directly (no ddclient)
-- [ ] Credential loading from env / sops file
-- [ ] Parses Dynu API response to confirm success
-- [ ] Unit tests with mocked HTTP
-
-> [!NOTE]
-> The Python script currently goes through `ddclient`. This phase eliminates that dependency.
-> The Dynu API is simple: a single HTTPS GET with credentials and the new IP in query params.
+- [x] `DynuUpdater` implementing `DdnsUpdater`
+- [x] Calls Dynu HTTP API v2 directly (no ddclient)
+- [x] Credential loading from env / sops file
+- [x] Parses Dynu API response to confirm success
+- [x] Unit tests with mocked HTTP
 
 ---
 
-### Phase 7 — Fan-out & NotificationBus
+### Phase 7 — Fan-out & NotificationBus *(Completed)*
 *Multiple subscribers.*
 
-- [ ] `NotificationBus` iterating all configured `DdnsUpdater`s
-- [ ] Collects per-subscriber results
-- [ ] Applies partial-success rule (all-or-nothing `last_ip` advance)
-- [ ] Integration test: 1 success + 1 failure → state unchanged
+- [x] `IpMonitorService` iterating all configured `DdnsUpdater`s
+- [x] Collects per-subscriber results
+- [x] Applies partial-success rule (all-or-nothing `last_ip` advance)
+- [x] Integration test: 1 success + 1 failure → state unchanged
 
 ---
 
-### Phase 8 — NixOS Module Rewrite
+### Phase 8 — NixOS Module Rewrite *(Completed)*
 *Replace dynu.nix.*
 
-- [ ] New `ddns-monitor.nix` module with subscriber list options
-- [ ] Rust binary as Nix derivation (via `rustPlatform.buildRustPackage`)
-- [ ] Credential injection via `LoadCredential` + sops-nix
-- [ ] Timer configuration (interval, boot delay)
+- [x] New `ddns-monitor.nix` module (`nixos/module.nix`) with subscriber list options
+- [x] Rust binary as Nix derivation (`cargoLock`)
+- [x] Credential injection via `LoadCredential` + sops-nix
+- [x] Timer configuration (interval, boot delay)
 - [ ] Smoke test on homelab server
 
 ---
@@ -324,8 +320,8 @@ Replace `dynu.nix` with a new module that:
 ### Phase 9 — Non-NixOS Support *(stretch)*
 *Make it usable on Debian/Arch/etc.*
 
-- [ ] XDG config dir fallback (`~/.config/ddns-monitor/`)
-- [ ] State dir fallback (`~/.local/share/ddns-monitor/` or `/var/lib/ddns-monitor/`)
+- [x] XDG config dir fallback (`~/.config/ddns-monitor/`)
+- [x] State dir fallback (`~/.local/share/ddns-monitor/` or `/var/lib/ddns-monitor/`)
 - [ ] `systemd.service` unit file (generic, for non-NixOS install)
 - [ ] Install instructions for manual systemd setup
 
@@ -354,14 +350,14 @@ Replace `dynu.nix` with a new module that:
 
 ## Definition of Done (Phase 6 complete = "v1 usable")
 
-- [ ] Binary discovers WAN IP via rotating providers
-- [ ] Persists state across executions
-- [ ] Detects IP changes correctly
-- [ ] Calls Dynu API directly (no ddclient dependency)
-- [ ] Notifies all configured subscribers on change
-- [ ] Leaves `last_ip` unchanged on any subscriber failure
-- [ ] Core logic is fully covered by unit tests (no real HTTP / fs / network)
-- [ ] NixOS module replaces `dynu.nix` and `monitor.py`
+- [x] Binary discovers WAN IP via rotating providers
+- [x] Persists state across executions
+- [x] Detects IP changes correctly
+- [x] Calls Dynu API directly (no ddclient dependency)
+- [x] Notifies all configured subscribers on change
+- [x] Leaves `last_ip` unchanged on any subscriber failure
+- [x] Core logic is fully covered by unit tests (no real HTTP / fs / network)
+- [x] NixOS module replaces `dynu.nix` and `monitor.py`
 - [ ] Tested live on homelab server
 
 ---

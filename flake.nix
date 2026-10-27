@@ -78,8 +78,9 @@
           version = "0.1.0";
           src = ./.;
 
-          # Update this hash after running: nix build 2>&1 | grep "got:"
-          cargoHash = pkgs.lib.fakeHash;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+          };
 
           inherit nativeBuildInputs buildInputs;
 
@@ -93,6 +94,12 @@
         default = ddns-monitor;
       };
 
+      # ── NixOS Module ──────────────────────────────────────────────────────────
+      nixosModules = rec {
+        ddns-monitor = import ./nixos/module.nix;
+        default = ddns-monitor;
+      };
+
       # ── Checks ────────────────────────────────────────────────────────────────
       # Run with: nix flake check
       checks.${system} = {
@@ -101,7 +108,9 @@
           pname = "ddns-monitor-tests";
           version = "0.1.0";
           src = ./.;
-          cargoHash = pkgs.lib.fakeHash;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+          };
           inherit nativeBuildInputs buildInputs;
           doCheck = true;
         };

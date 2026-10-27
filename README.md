@@ -26,9 +26,10 @@ changed and other providers could accept the update.
 
 ## Status
 
-**Phase 0 — in progress.** Laying foundations: flake, documentation, module structure.
+**Phases 0 through 8 Complete — v1 Ready.**
+Full Rust implementation with domain models, round-robin WAN IP discovery via `ureq` (rustls), atomic JSON state persistence, JSONL execution history, native Dynu API updater plugin, multi-subscriber fan-out, and declarative NixOS systemd module.
 
-See [`ROADMAP.md`](./ROADMAP.md) for the full plan.
+See [`ROADMAP.md`](./ROADMAP.md) for details.
 
 ---
 
