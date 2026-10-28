@@ -86,7 +86,11 @@ fn main() {
                         std::process::exit(1);
                     }
                 };
-                updaters.push(Box::new(DynuUpdater::new(&sub.domain, &credential, timeout)));
+                updaters.push(Box::new(DynuUpdater::new(
+                    &sub.domain,
+                    &credential,
+                    timeout,
+                )));
             }
             unknown => {
                 log::error!("Unsupported DDNS provider: '{}'", unknown);
@@ -105,7 +109,10 @@ fn main() {
 
     match service.run() {
         Ok(RunOutcome::NoChange { ip }) => {
-            log::info!("Execution complete: No IP change detected (current: {}).", ip);
+            log::info!(
+                "Execution complete: No IP change detected (current: {}).",
+                ip
+            );
             std::process::exit(0);
         }
         Ok(RunOutcome::Updated { ip, subscribers }) => {

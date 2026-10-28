@@ -37,7 +37,11 @@ impl IpResolver for HttpIpResolver {
             let current_index = (start_index + offset) % n;
             let url = &self.urls[current_index];
 
-            log::debug!("Attempting IP discovery with provider '{}' (index {})", url, current_index);
+            log::debug!(
+                "Attempting IP discovery with provider '{}' (index {})",
+                url,
+                current_index
+            );
 
             let resp = self
                 .agent

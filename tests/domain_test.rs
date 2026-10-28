@@ -1,6 +1,8 @@
-use std::net::Ipv4Addr;
-use ddns_monitor::domain::models::{HistoryEntry, IpDiscoveryResult, MonitorState, SubscriberResult};
+use ddns_monitor::domain::models::{
+    HistoryEntry, IpDiscoveryResult, MonitorState, SubscriberResult,
+};
 use ddns_monitor::domain::validation::{is_valid_public_ipv4, next_provider_index};
+use std::net::Ipv4Addr;
 
 #[test]
 fn test_is_valid_public_ipv4() {

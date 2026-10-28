@@ -90,12 +90,8 @@ fn test_dynu_updater_server_error() {
         .create();
 
     let endpoint = format!("{}/nic/update", server.url());
-    let updater = DynuUpdater::with_endpoint(
-        "test.example.com",
-        "pass",
-        endpoint,
-        Duration::from_secs(2),
-    );
+    let updater =
+        DynuUpdater::with_endpoint("test.example.com", "pass", endpoint, Duration::from_secs(2));
 
     let res = updater.update(Ipv4Addr::new(198, 51, 100, 5));
     assert!(res.is_err());

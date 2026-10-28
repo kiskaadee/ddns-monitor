@@ -82,7 +82,10 @@ impl IpMonitorService {
         );
 
         if state.last_ip == Some(discovery.ip) {
-            log::info!("IP matches last successful IP ({}). No update needed.", discovery.ip);
+            log::info!(
+                "IP matches last successful IP ({}). No update needed.",
+                discovery.ip
+            );
             // Persist the updated provider index so rotation continues
             state.last_provider_index = Some(discovery.provider_index);
             self.state_repo.save(&state)?;

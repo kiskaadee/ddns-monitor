@@ -56,10 +56,11 @@ impl StateRepository for JsonStateRepository {
             source,
         })?;
 
-        file.write_all(&json_bytes).map_err(|source| StateError::Io {
-            path: tmp_path.display().to_string(),
-            source,
-        })?;
+        file.write_all(&json_bytes)
+            .map_err(|source| StateError::Io {
+                path: tmp_path.display().to_string(),
+                source,
+            })?;
 
         file.sync_all().map_err(|source| StateError::Io {
             path: tmp_path.display().to_string(),

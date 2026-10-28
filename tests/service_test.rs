@@ -1,6 +1,4 @@
-use ddns_monitor::domain::errors::{
-    HistoryError, ResolveError, StateError, UpdateError,
-};
+use ddns_monitor::domain::errors::{HistoryError, ResolveError, StateError, UpdateError};
 use ddns_monitor::domain::models::{HistoryEntry, IpDiscoveryResult, MonitorState};
 use ddns_monitor::domain::traits::{DdnsUpdater, HistoryRepository, IpResolver, StateRepository};
 use ddns_monitor::service::{IpMonitorService, RunOutcome};
@@ -255,7 +253,9 @@ fn test_all_failed_preserves_old_last_ip() {
         vec![Box::new(updater1), Box::new(updater2)],
     );
 
-    let outcome = service.run().expect("service run returns all failed status");
+    let outcome = service
+        .run()
+        .expect("service run returns all failed status");
     match outcome {
         RunOutcome::AllFailed { ip, subscribers } => {
             assert_eq!(ip, new_ip);

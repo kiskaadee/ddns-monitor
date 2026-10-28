@@ -48,7 +48,11 @@ impl DdnsUpdater for DynuUpdater {
     }
 
     fn update(&self, ip: Ipv4Addr) -> Result<(), UpdateError> {
-        log::info!("Updating Dynu record for domain '{}' to {}", self.domain, ip);
+        log::info!(
+            "Updating Dynu record for domain '{}' to {}",
+            self.domain,
+            ip
+        );
 
         let resp = self
             .agent
@@ -74,11 +78,7 @@ impl DdnsUpdater for DynuUpdater {
             })?;
 
         let trimmed = body.trim();
-        log::debug!(
-            "Dynu response (status {}): '{}'",
-            status_code,
-            trimmed
-        );
+        log::debug!("Dynu response (status {}): '{}'", status_code, trimmed);
 
         if !status_code.is_success() {
             return Err(UpdateError::NetworkError {
