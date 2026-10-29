@@ -26,3 +26,15 @@ def dynu_config(raw_config, general_config):
         "test_ipv4": str(general_config.get("test_ipv4", "198.51.100.42")).strip(),
         "test_ipv6": str(general_config.get("test_ipv6", "2001:db8::42")).strip(),
     }
+
+
+@pytest.fixture(scope="session")
+def duckdns_config(raw_config, general_config):
+    cfg = raw_config.get("duckdns", {})
+    if not cfg.get("enabled", False):
+        pytest.skip("DuckDNS contract tests are disabled in contracts.local.toml")
+    return {
+        **{k: v.strip() if isinstance(v, str) else v for k, v in cfg.items()},
+        "test_ipv4": str(general_config.get("test_ipv4", "198.51.100.42")).strip(),
+        "test_ipv6": str(general_config.get("test_ipv6", "2001:db8::42")).strip(),
+    }

@@ -43,10 +43,10 @@ class TestDynuContract:
         assert status == 200, f"Expected HTTP 200, got {status}"
         assert body.startswith("badauth"), f"Expected 'badauth', got: {body}"
 
-    def test_bad_credentials_short_circuit_on_matching_ip(self, dynu_config):
+    def test_bad_credentials_on_matching_ip(self, dynu_config):
         """
-        Observed: If caller's WAN IP already matches the domain's A record, Dynu
-        short-circuits and returns 'nochg' without checking password validity.
+        Observed: Invalid credentials return 'badauth' if IP differs, or may
+        short-circuit to 'nochg' if caller's WAN IP already matches the domain's A record.
         """
         params = {
             "hostname": dynu_config["hostname"],
@@ -54,8 +54,8 @@ class TestDynuContract:
         }
         status, body = _query_dynu(params)
         assert status == 200, f"Expected HTTP 200, got {status}"
-        assert body.startswith("nochg"), (
-            f"Expected short-circuit 'nochg' when IP matches, got: {body}"
+        assert body.startswith(("badauth", "nochg")), (
+            f"Expected 'badauth' or short-circuit 'nochg', got: {body}"
         )
 
     def test_nonexistent_hostname(self, dynu_config):
