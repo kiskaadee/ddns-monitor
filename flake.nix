@@ -37,6 +37,10 @@
       devShells.${system}.default = pkgs.mkShell {
         inherit nativeBuildInputs buildInputs;
 
+        env = {
+          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
+
         packages = with pkgs; [
           # Linting & formatting (also available via rustToolchain, listed
           # here for clarity)
@@ -49,6 +53,14 @@
           # Useful during DDNS API development
           curl
           jq
+          dnsutils
+
+          # Contract testing suite
+          uv
+          (python3.withPackages (ps: with ps; [
+            pytest
+            dnspython
+          ]))
         ];
 
         shellHook = ''
@@ -66,6 +78,7 @@
           echo "    cargo audit          scan dependencies for CVEs"
           echo "    cargo clippy         lint"
           echo "    cargo fmt            format"
+          echo "    pytest               run contract tests"
           echo ""
         '';
       };

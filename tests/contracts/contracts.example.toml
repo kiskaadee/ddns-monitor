@@ -1,0 +1,31 @@
+# tests/contracts/contracts.example.toml
+# Copy to contracts.toml and fill in your dedicated test credentials.
+
+[general]
+# RFC 5737 documentation test IP (TEST-NET-2)
+test_ipv4 = "198.51.100.42"
+test_ipv6 = "2001:db8::42"
+
+[dynu]
+enabled = false
+hostname = "test-node.dynu.net"
+password = "REDACTED"
+# Optional: username if testing HTTP Basic Auth instead of query string password
+username = ""
+
+[duckdns]
+enabled = false
+domain = "test-node"    # duckdns.org subdomain prefix
+token = "REDACTED-UUID"
+
+[noip]
+enabled = false
+hostname = "test-node.ddns.net"
+username = "REDACTED_DDNS_KEY_USER"
+password = "REDACTED_DDNS_KEY_PASS"
+user_agent = "DDNSMonitorTests/0.1 contact@example.com"
+
+[desec]
+enabled = false
+hostname = "test-node.dedyn.io"
+token = "REDACTED_TOKEN"

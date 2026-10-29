@@ -1,0 +1,24 @@
+[project]
+name = "ddns-monitor-contracts"
+version = "0.1.0"
+description = "Deterministic live contract test suite for DDNS provider adapters"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.0.0",
+    "dnspython>=2.6.0",
+    "ruff>=0.9.0",
+    "pyright>=1.1.350",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "RUF"]
+
+[tool.pyright]
+include = ["tests/contracts"]
+venvPath = "."
+venv = ".venv"
